@@ -1,7 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  static const String id = "register_screen";
+
+  final _auth = FirebaseAuth.instance;
+  late String name;
+  late String email;
+  late String password;
+  late String confpassword;
+  // const RegisterScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,17 +44,23 @@ class RegisterScreen extends StatelessWidget {
                   TextField(
                     keyboardType: TextInputType.name,
                     decoration: const InputDecoration(
-                      labelText: "Full Name",
-                      prefixIcon: Icon(Icons.person),
-                    ),
+                        labelText: "Full Name",
+                        prefixIcon: Icon(Icons.person),
+                        border: OutlineInputBorder()),
+                    onChanged: (value) {
+                      name = value;
+                    },
                   ),
                   const SizedBox(height: 20),
                   TextField(
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
-                      labelText: "Email Address",
-                      prefixIcon: Icon(Icons.email),
-                    ),
+                        labelText: "Email Address",
+                        prefixIcon: Icon(Icons.email),
+                        border: OutlineInputBorder()),
+                    onChanged: (value) {
+                      email = value;
+                    },
                   ),
                   const SizedBox(height: 20),
                   TextField(
@@ -54,7 +68,11 @@ class RegisterScreen extends StatelessWidget {
                     decoration: const InputDecoration(
                       labelText: "Password",
                       prefixIcon: Icon(Icons.lock),
+                      border: OutlineInputBorder(),
                     ),
+                    onChanged: (value) {
+                      password = value;
+                    },
                   ),
                   const SizedBox(height: 20),
                   TextField(
@@ -62,12 +80,58 @@ class RegisterScreen extends StatelessWidget {
                     decoration: const InputDecoration(
                       labelText: "Confirm Password",
                       prefixIcon: Icon(Icons.lock_outline),
+                      border: OutlineInputBorder(),
                     ),
+                    onChanged: (value) {
+                      confpassword = value;
+                    },
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/login');
+                    onPressed: () async {
+                      if (password != confpassword) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text('Error'),
+                            content: Text('Password do not Match'),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Ok'))
+                            ],
+                          ),
+                        );
+                        return;
+                      }
+                      try {
+                        final newUser =
+                            await _auth.createUserWithEmailAndPassword(
+                                email: email, password: password);
+                        if (newUser != null) {
+                          Navigator.pushNamed(context, '/login');
+                        }
+                      } catch (e) {
+                        print(e);
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text('Error'),
+                            content:
+                                Text('Registration failed. Please try again.'),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Ok'))
+                            ],
+                          ),
+                        );
+                        return;
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -87,6 +151,15 @@ class RegisterScreen extends StatelessWidget {
                       const Text("Already have an account?"),
                       TextButton(
                         onPressed: () {
+                          // try {
+                          //   final newUser =
+                          //       await _auth.createUserWithEmailAndPassword(
+                          //           email: email, password: password);
+
+                          Navigator.pushNamed(context, '/login');
+                          // } catch (e) {
+                          //   print(e);
+                          // }
                           // Navigate to login screen if implemented
                         },
                         child: const Text(

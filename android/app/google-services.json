@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "300143388561",
-    "project_id": "chat-7f668",
-    "storage_bucket": "chat-7f668.firebasestorage.app"
+    "project_number": "542519784052",
+    "project_id": "app-project-f6efe",
+    "storage_bucket": "app-project-f6efe.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:300143388561:android:e45ad92a5477c46cf09c30",
+        "mobilesdk_app_id": "1:542519784052:android:4eeffb1b035cae36dc9721",
         "android_client_info": {
-          "package_name": "com.example.flash_chat"
+          "package_name": "com.example.app"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCj-kNzY72cxWaLztXxN9MGZa412B_8bp8"
+          "current_key": "AIzaSyC4SUUGmBFRxjVnujCSd-1fHcdmxxCA4Kk"
         }
       ],
       "services": {
@@ -26,7 +26,7 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:300143388561:android:84b1ab3b55609a4af09c30",
+        "mobilesdk_app_id": "1:542519784052:android:66ad57b139fc10cbdc9721",
         "android_client_info": {
           "package_name": "com.example.test_app"
         }
@@ -34,7 +34,26 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCj-kNzY72cxWaLztXxN9MGZa412B_8bp8"
+          "current_key": "AIzaSyC4SUUGmBFRxjVnujCSd-1fHcdmxxCA4Kk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:542519784052:android:911993b1b87c8c5fdc9721",
+        "android_client_info": {
+          "package_name": "com.example.todoey_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4SUUGmBFRxjVnujCSd-1fHcdmxxCA4Kk"
         }
       ],
       "services": {
