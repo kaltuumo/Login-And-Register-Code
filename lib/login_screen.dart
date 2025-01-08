@@ -27,6 +27,8 @@ class LoginScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  // const SizedBox(height:),
+
                   const Text(
                     "Welcome Back!",
                     textAlign: TextAlign.center,
