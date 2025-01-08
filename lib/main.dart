@@ -2,6 +2,7 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:test_app/changepassword_screen.dart';
 import 'package:test_app/forget_screen.dart';
 import 'login_screen.dart'; // Import your LoginScreen
 import 'register_screen.dart';
@@ -15,6 +16,8 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -29,6 +32,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginScreen(),
         '/display': (context) => DisplayScreen(),
         '/forget': (context) => ForgetScreen(),
+        '/changepassword': (context) => ChangePasswordScreen(),
         // '/toggle': (context) => ToggleScreen(),
       },
     );

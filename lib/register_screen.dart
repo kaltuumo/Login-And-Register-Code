@@ -9,11 +9,16 @@ class RegisterScreen extends StatelessWidget {
   late String email;
   late String password;
   late String confpassword;
-  // const RegisterScreen({Key? key}) : super(key: key);
+
+  RegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Register"),
+        centerTitle: true,
+      ),
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -45,6 +50,7 @@ class RegisterScreen extends StatelessWidget {
                     keyboardType: TextInputType.name,
                     decoration: const InputDecoration(
                         labelText: "Full Name",
+                        labelStyle: TextStyle(color: Colors.black),
                         prefixIcon: Icon(Icons.person),
                         border: OutlineInputBorder()),
                     onChanged: (value) {
@@ -56,7 +62,10 @@ class RegisterScreen extends StatelessWidget {
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                         labelText: "Email Address",
-                        prefixIcon: Icon(Icons.email),
+                        labelStyle: TextStyle(color: Colors.black),
+                        prefixIcon: Icon(
+                          Icons.email,
+                        ),
                         border: OutlineInputBorder()),
                     onChanged: (value) {
                       email = value;
@@ -67,6 +76,7 @@ class RegisterScreen extends StatelessWidget {
                     obscureText: true,
                     decoration: const InputDecoration(
                       labelText: "Password",
+                      labelStyle: TextStyle(color: Colors.black),
                       prefixIcon: Icon(Icons.lock),
                       border: OutlineInputBorder(),
                     ),
@@ -79,6 +89,7 @@ class RegisterScreen extends StatelessWidget {
                     obscureText: true,
                     decoration: const InputDecoration(
                       labelText: "Confirm Password",
+                      labelStyle: TextStyle(color: Colors.black),
                       prefixIcon: Icon(Icons.lock_outline),
                       border: OutlineInputBorder(),
                     ),
@@ -93,14 +104,15 @@ class RegisterScreen extends StatelessWidget {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text('Error'),
-                            content: Text('Password do not Match'),
+                            title: const Text('Error'),
+                            content: const Text('Passwords do not match'),
                             actions: [
                               TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text('Ok'))
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Ok'),
+                              )
                             ],
                           ),
                         );
@@ -109,24 +121,44 @@ class RegisterScreen extends StatelessWidget {
                       try {
                         final newUser =
                             await _auth.createUserWithEmailAndPassword(
-                                email: email, password: password);
+                          email: email,
+                          password: password,
+                        );
                         if (newUser != null) {
-                          Navigator.pushNamed(context, '/login');
+                          // Show success message
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Success'),
+                              content:
+                                  const Text('User Registered Successfully!'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    Navigator.pushNamed(context, '/login');
+                                  },
+                                  child: const Text('Ok'),
+                                )
+                              ],
+                            ),
+                          );
                         }
                       } catch (e) {
                         print(e);
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text('Error'),
-                            content:
-                                Text('Registration failed. Please try again.'),
+                            title: const Text('Error'),
+                            content: const Text(
+                                'Registration failed. Please try again.'),
                             actions: [
                               TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text('Ok'))
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Ok'),
+                              )
                             ],
                           ),
                         );
@@ -151,16 +183,7 @@ class RegisterScreen extends StatelessWidget {
                       const Text("Already have an account?"),
                       TextButton(
                         onPressed: () {
-                          // try {
-                          //   final newUser =
-                          //       await _auth.createUserWithEmailAndPassword(
-                          //           email: email, password: password);
-
                           Navigator.pushNamed(context, '/login');
-                          // } catch (e) {
-                          //   print(e);
-                          // }
-                          // Navigate to login screen if implemented
                         },
                         child: const Text(
                           "Log In",

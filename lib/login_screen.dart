@@ -7,11 +7,17 @@ class LoginScreen extends StatelessWidget {
   final _auth = FirebaseAuth.instance;
   late String email;
   late String password;
+
+  LoginScreen({super.key});
   // const LoginScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Login'),
+        centerTitle: true,
+      ),
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -43,6 +49,7 @@ class LoginScreen extends StatelessWidget {
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                         labelText: "Email Address",
+                        labelStyle: TextStyle(color: Colors.black),
                         prefixIcon: Icon(Icons.email),
                         border: OutlineInputBorder()),
                     onChanged: (value) {
@@ -54,6 +61,7 @@ class LoginScreen extends StatelessWidget {
                     obscureText: true,
                     decoration: const InputDecoration(
                         labelText: "Password",
+                        labelStyle: TextStyle(color: Colors.black),
                         prefixIcon: Icon(Icons.lock),
                         border: OutlineInputBorder()),
                     onChanged: (value) {
@@ -61,11 +69,23 @@ class LoginScreen extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 20),
+                  // Align(
+                  //   alignment: Alignment.centerRight,
+                  //   child: TextButton(
+                  //     onPressed: () {
+                  //       Navigator.pushNamed(context, '/forget');
+                  //     },
+                  //     child: const Text(
+                  //       "Forgot Password?",
+                  //       style: TextStyle(color: Colors.blue),
+                  //     ),
+                  //   ),
+                  // ),
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/forget');
+                        Navigator.pushNamed(context, '/changepassword');
                       },
                       child: const Text(
                         "Forgot Password?",
@@ -129,10 +149,12 @@ class LoginScreen extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
+                      // backgroundColor: Colors.blueAccent,
                     ),
                     child: const Text(
                       "Log In",
                       style: TextStyle(
+                        // color: Colors.black,
                         fontSize: 18,
                         // color: Colors.red,
                       ),

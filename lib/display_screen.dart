@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class DisplayScreen extends StatelessWidget {
+  const DisplayScreen({super.key});
+
   // const MyWidget({super.key});
 
   @override
