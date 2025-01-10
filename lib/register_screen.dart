@@ -1,16 +1,24 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   static const String id = "register_screen";
 
+  _RegisterScreenState createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
   final _auth = FirebaseAuth.instance;
   late String name;
   late String email;
   late String password;
   late String confpassword;
 
-  RegisterScreen({super.key});
+  bool _isPasswordvisible = false;
+  bool _isComfPasswordVisible = false;
+  bool _isLoading = false;
+
+  // RegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -73,12 +81,25 @@ class RegisterScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   TextField(
-                    obscureText: true,
-                    decoration: const InputDecoration(
+                    obscureText: !_isPasswordvisible,
+                    // obscureText: true,
+                    decoration: InputDecoration(
                       labelText: "Password",
                       labelStyle: TextStyle(color: Colors.black),
                       prefixIcon: Icon(Icons.lock),
                       border: OutlineInputBorder(),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordvisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordvisible = !_isPasswordvisible;
+                          });
+                        },
+                      ),
                     ),
                     onChanged: (value) {
                       password = value;
@@ -86,96 +107,123 @@ class RegisterScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   TextField(
-                    obscureText: true,
-                    decoration: const InputDecoration(
+                    // obscureText: true,
+                    obscureText: !_isComfPasswordVisible,
+                    decoration: InputDecoration(
                       labelText: "Confirm Password",
                       labelStyle: TextStyle(color: Colors.black),
                       prefixIcon: Icon(Icons.lock_outline),
                       border: OutlineInputBorder(),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isComfPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isComfPasswordVisible = !_isComfPasswordVisible;
+                          });
+                        },
+                      ),
                     ),
                     onChanged: (value) {
                       confpassword = value;
                     },
                   ),
                   const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () async {
-                      if (password != confpassword) {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text('Error'),
-                            content: const Text('Passwords do not match'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('Ok'),
-                              )
-                            ],
-                          ),
-                        );
-                        return;
-                      }
-                      try {
-                        final newUser =
-                            await _auth.createUserWithEmailAndPassword(
-                          email: email,
-                          password: password,
-                        );
-                        if (newUser != null) {
-                          // Show success message
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text('Success'),
-                              content:
-                                  const Text('User Registered Successfully!'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                    Navigator.pushNamed(context, '/login');
-                                  },
-                                  child: const Text('Ok'),
-                                )
-                              ],
+                  _isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : ElevatedButton(
+                          onPressed: () async {
+                            if (password != confpassword) {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Error'),
+                                  content: const Text('Passwords do not match'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Ok'),
+                                    )
+                                  ],
+                                ),
+                              );
+                              return;
+                            }
+                            setState(() {
+                              _isLoading = true;
+                            });
+                            try {
+                              final newUser =
+                                  await _auth.createUserWithEmailAndPassword(
+                                email: email,
+                                password: password,
+                              );
+                              setState(() {
+                                _isLoading = false;
+                              });
+                              if (newUser != null) {
+                                // Show success message
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text('Success'),
+                                    content: const Text(
+                                        'User Registered Successfully!'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                          Navigator.pushNamed(
+                                              context, '/login');
+                                        },
+                                        child: const Text('Ok'),
+                                      )
+                                    ],
+                                  ),
+                                );
+                              }
+                            } catch (e) {
+                              setState(() {
+                                _isLoading = false;
+                              });
+                              print(e);
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Error'),
+                                  content: const Text(
+                                      'Registration failed. Please try again.'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Ok'),
+                                    )
+                                  ],
+                                ),
+                              );
+                              return;
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                          );
-                        }
-                      } catch (e) {
-                        print(e);
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text('Error'),
-                            content: const Text(
-                                'Registration failed. Please try again.'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('Ok'),
-                              )
-                            ],
                           ),
-                        );
-                        return;
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text(
-                      "Sign Up",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ),
+                          child: const Text(
+                            "Sign Up",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

@@ -1,15 +1,23 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-// import 'display.dart';
-// import 'display_screen.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final _auth = FirebaseAuth.instance;
   late String email;
   late String password;
+  bool _isPasswordVisible = false; // Controls password visibility
+  bool _isLoading = false;
 
-  LoginScreen({super.key});
-  // const LoginScreen({Key? key}) : super(key: key);
+  void initState() {
+    super.initState();
+    _isLoading =
+        false; // Ensure that loading is reset when the screen is recreated
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +35,6 @@ class LoginScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // const SizedBox(height:),
-
                   const Text(
                     "Welcome Back!",
                     textAlign: TextAlign.center,
@@ -59,30 +65,45 @@ class LoginScreen extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 20),
+                  // Password TextField with visibility toggle
                   TextField(
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                        labelText: "Password",
-                        labelStyle: TextStyle(color: Colors.black),
-                        prefixIcon: Icon(Icons.lock),
-                        border: OutlineInputBorder()),
+                    obscureText: !_isPasswordVisible, // Toggle visibility
+                    decoration: InputDecoration(
+                      labelText: "Password",
+                      labelStyle: TextStyle(color: Colors.black),
+                      prefixIcon: Icon(Icons.lock),
+                      border: OutlineInputBorder(),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordVisible =
+                                !_isPasswordVisible; // Toggle visibility
+                          });
+                        },
+                      ),
+                    ),
                     onChanged: (value) {
                       password = value;
                     },
                   ),
                   const SizedBox(height: 20),
-                  // Align(
-                  //   alignment: Alignment.centerRight,
-                  //   child: TextButton(
-                  //     onPressed: () {
-                  //       Navigator.pushNamed(context, '/forget');
-                  //     },
-                  //     child: const Text(
-                  //       "Forgot Password?",
-                  //       style: TextStyle(color: Colors.blue),
-                  //     ),
-                  //   ),
-                  // ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/forgot');
+                      },
+                      child: const Text(
+                        "Forgot Password",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                  ),
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
@@ -90,78 +111,81 @@ class LoginScreen extends StatelessWidget {
                         Navigator.pushNamed(context, '/changepassword');
                       },
                       child: const Text(
-                        "Forgot Password?",
+                        "Change Password",
                         style: TextStyle(color: Colors.blue),
                       ),
                     ),
                   ),
-
-                  // child: child),
                   const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () async {
-                      // if (user != null) {
-                      //   Navigator.pushNamed(context, '/display');
-                      // }
-                      try {
-                        final userCredential =
-                            await _auth.signInWithEmailAndPassword(
-                                email: email, password: password);
-                        final user = userCredential.user;
-                        if (user != null) {
-                          Navigator.pushNamed(context, '/display');
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: Text('Error'),
-                              content: Text('Login failed. Please try again.'),
-                              actions: [
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text('Ok'))
-                              ],
+                  _isLoading
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : ElevatedButton(
+                          onPressed: () async {
+                            setState(() {
+                              _isLoading = true;
+                            });
+                            try {
+                              final userCredential =
+                                  await _auth.signInWithEmailAndPassword(
+                                      email: email, password: password);
+                              final user = userCredential.user;
+                              if (user != null) {
+                                Navigator.pushNamed(context, '/display');
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: Text('Error'),
+                                    content:
+                                        Text('Login failed. Please try again.'),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text('Ok'))
+                                    ],
+                                  ),
+                                );
+                              }
+                            } catch (e) {
+                              print(e);
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: Text('Error'),
+                                  content:
+                                      Text('Login failed. Please try again.'),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('Ok'))
+                                  ],
+                                ),
+                              );
+                            } finally {
+                              setState(() {
+                                _isLoading = false;
+                              });
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                          );
-                          return;
-                        }
-                      } catch (e) {
-                        print(e);
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text('Error'),
-                            content: Text('Login failed. Please try again.'),
-                            actions: [
-                              TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text('Ok'))
-                            ],
                           ),
-                        );
-                        return;
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      // backgroundColor: Colors.blueAccent,
-                    ),
-                    child: const Text(
-                      "Log In",
-                      style: TextStyle(
-                        // color: Colors.black,
-                        fontSize: 18,
-                        // color: Colors.red,
-                      ),
-                    ),
-                  ),
+                          child: const Text(
+                            "Log In",
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

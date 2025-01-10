@@ -15,6 +15,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   late String compass;
   String errorMessage = '';
 
+  bool _isCurrentPasswordVisible = false;
+  bool _isNewPasswordVisible = false;
+  bool _isComfPasswordVisible = false;
+
   void _changePassword() async {
     try {
       // Get the user based on email and reauthenticate
@@ -57,7 +61,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         }
       } else {
         setState(() {
-          errorMessage = 'This Email does not Exit.';
+          errorMessage = 'This Email does not exist.';
         });
       }
     } catch (e) {
@@ -73,7 +77,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       appBar: AppBar(
         title: Text('Change Password'),
         centerTitle: true,
-        // backgroundColor: Colors.blueAccent,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -117,12 +120,25 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
               // Current Password Field
               TextField(
-                obscureText: true,
+                obscureText: !_isCurrentPasswordVisible,
                 decoration: InputDecoration(
                   labelText: 'Current Password',
                   labelStyle: TextStyle(color: Colors.black),
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.lock, color: Colors.black),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isCurrentPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: Colors.black,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isCurrentPasswordVisible = !_isCurrentPasswordVisible;
+                      });
+                    },
+                  ),
                 ),
                 onChanged: (value) {
                   currentpass = value;
@@ -132,12 +148,25 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
               // New Password Field
               TextField(
-                obscureText: true,
+                obscureText: !_isNewPasswordVisible,
                 decoration: InputDecoration(
                   labelText: 'New Password',
                   labelStyle: TextStyle(color: Colors.black),
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.lock_outline, color: Colors.black),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isNewPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: Colors.black,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isNewPasswordVisible = !_isNewPasswordVisible;
+                      });
+                    },
+                  ),
                 ),
                 onChanged: (value) {
                   newpass = value;
@@ -147,12 +176,25 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
               // Confirm New Password Field
               TextField(
-                obscureText: true,
+                obscureText: !_isComfPasswordVisible,
                 decoration: InputDecoration(
                   labelText: 'Confirm New Password',
                   labelStyle: TextStyle(color: Colors.black),
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.lock_outline, color: Colors.black),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isComfPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: Colors.black,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isComfPasswordVisible = !_isComfPasswordVisible;
+                      });
+                    },
+                  ),
                 ),
                 onChanged: (value) {
                   compass = value;
@@ -178,7 +220,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  // backgroundColor: Colors.blueAccent,
                 ),
                 child: Text(
                   'Update Password',
