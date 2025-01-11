@@ -21,52 +21,71 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
   void _changePassword() async {
     try {
-      // Get the user based on email and reauthenticate
       User? user = _auth.currentUser;
+
+      // Ensure user is logged in and email matches
       if (user != null && user.email == email) {
-        // Reauthenticate the user
+        // Reauthenticate the user with the provided credentials
         AuthCredential credential = EmailAuthProvider.credential(
           email: email,
           password: currentpass,
         );
 
-        await user.reauthenticateWithCredential(credential);
+        try {
+          // Try to reauthenticate the user with the current password
+          await user.reauthenticateWithCredential(credential);
 
-        // Check if the new password and confirmation match
-        if (newpass == compass) {
-          // Update the password
-          await user.updatePassword(newpass);
+          // If reauthentication is successful, show SnackBar
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   SnackBar(
+          //     content: Text('Your Current Password is valid.'),
+          //     backgroundColor: Colors.green,
+          //   ),
+          // );
 
-          // Show success message and navigate back
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: Text('Success'),
-              content: Text('Your password has been changed successfully.'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.pop(context); // Navigate back to login screen
-                  },
-                  child: Text('Ok'),
-                ),
-              ],
-            ),
-          );
-        } else {
+          // Check if the new password matches the confirm password
+          if (newpass == compass) {
+            // Update the password
+            await user.updatePassword(newpass);
+
+            // Show success dialog for password change
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text('Success'),
+                content: Text('Your password has been changed successfully.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context); // Navigate back to login screen
+                    },
+                    child: Text('Ok'),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            setState(() {
+              errorMessage = 'Passwords do not match.';
+            });
+          }
+        } catch (e) {
+          // If reauthentication fails, display error
           setState(() {
-            errorMessage = 'Passwords do not match.';
+            errorMessage = 'Invalid current password.';
           });
         }
       } else {
+        // If email doesn't exist, show error
         setState(() {
-          errorMessage = 'This Email does not exist.';
+          errorMessage = 'Email does not exist.';
         });
       }
     } catch (e) {
+      // Catch any other exceptions
       setState(() {
-        errorMessage = e.toString();
+        errorMessage = e.toString(); // Display error message in case of failure
       });
     }
   }

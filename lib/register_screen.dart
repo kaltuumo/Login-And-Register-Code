@@ -138,6 +138,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         )
                       : ElevatedButton(
                           onPressed: () async {
+                            if (name.isEmpty ||
+                                email.isEmpty ||
+                                password.isEmpty ||
+                                confpassword.isEmpty) {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text("Error"),
+                                  content:
+                                      const Text('All fields must be Write!'),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text("Ok")),
+                                  ],
+                                ),
+                              );
+                              return;
+                            }
+
                             if (password != confpassword) {
                               showDialog(
                                 context: context,

@@ -21,6 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         title: Text('Login'),
@@ -32,9 +33,14 @@ class _LoginScreenState extends State<LoginScreen> {
             padding: const EdgeInsets.all(16.0),
             child: SingleChildScrollView(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                // mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  // SizedBox(
+                  //   width: double.infinity,
+                  //   height: height / 2.7,
+                  //   child: Image.asset('images/login.jpg'),
+                  // ),
                   const Text(
                     "Welcome Back!",
                     textAlign: TextAlign.center,
@@ -92,30 +98,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
                   const SizedBox(height: 20),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/forgot');
-                      },
-                      child: const Text(
-                        "Forgot Password",
-                        style: TextStyle(color: Colors.blue),
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/changepassword');
-                      },
-                      child: const Text(
-                        "Change Password",
-                        style: TextStyle(color: Colors.blue),
-                      ),
-                    ),
-                  ),
+
+                  // Align(
+                  //   alignment: Alignment.centerRight,
+                  //   child: TextButton(
+                  //     onPressed: () {
+                  //       Navigator.pushNamed(context, '/changepassword');
+                  //     },
+                  //     child: const Text(
+                  //       "Change Password",
+                  //       style: TextStyle(color: Colors.blue),
+                  //     ),
+                  //   ),
+                  // ),
                   const SizedBox(height: 20),
                   _isLoading
                       ? Center(
@@ -186,6 +181,19 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
+                  const SizedBox(height: 20),
+                  Align(
+                    alignment: Alignment.center,
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/forgot');
+                      },
+                      child: const Text(
+                        "Forgot Password?",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

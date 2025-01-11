@@ -16,11 +16,14 @@ class ForgotScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Text(
-              'Forgot Password',
-              style: TextStyle(fontSize: 30),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                'Forgot Password',
+                style: TextStyle(fontSize: 30),
+              ),
             ),
             SizedBox(height: 30),
             Text(
@@ -39,39 +42,57 @@ class ForgotScreen extends StatelessWidget {
               },
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                if (email.isNotEmpty) {
-                  try {
-                    await _auth.sendPasswordResetEmail(email: email);
+            SizedBox(
+              height: 60,
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () async {
+                  if (email.isNotEmpty) {
+                    try {
+                      await _auth.sendPasswordResetEmail(email: email);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Password reset link sent to $email.'),
+                        ),
+                      );
+                    } on FirebaseAuthException catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Error: ${e.message}'),
+                        ),
+                      );
+                    }
+                  } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('Password reset link sent to $email.'),
-                      ),
-                    );
-                  } on FirebaseAuthException catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Error: ${e.message}'),
+                        content: Text('Please enter a valid email address.'),
                       ),
                     );
                   }
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Please enter a valid email address.'),
+                },
+                style: ElevatedButton.styleFrom(
+                    // textStyle: TextStyle(fontSize: 18), // Font size
                     ),
-                  );
-                }
-              },
-              child: Text('Send Reset Link'),
+                child: Text('Back To Login'),
+              ),
+
+              // No action for now
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/login');
-              }, // No action for now
-              child: Text('Back To Login'),
+            SizedBox(
+              height: 60,
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/login');
+                },
+                style: ElevatedButton.styleFrom(
+                    // textStyle: TextStyle(fontSize: 18), // Font size
+                    ),
+                child: Text('Back To Login'),
+              ),
+
+              // No action for now
             )
           ],
         ),
